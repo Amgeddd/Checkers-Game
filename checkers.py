@@ -58,3 +58,49 @@ class CheckersGame:
         return moves
     def is_valid_cell(self, row, col):
         return 0 <= row < BOARD_SIZE and 0 <= col < BOARD_SIZE
+    def get_best_move(self, depth):
+        best_score = float('-inf')
+        best_move = None
+        moves = self.get_possible_moves(self.current_player)
+        for move in moves:
+            start_row, start_col, end_row, end_col = move
+            self.make_move(start_row, start_col, end_row, end_col)
+            score = self.minimax(depth - 1, False)
+            self.undo_move(start_row, start_col, end_row, end_col)
+            if score > best_score:
+                best_score = score
+                best_move = move
+        return best_move
+
+    def minimax(self, depth, alpha, beta, maximizing_player):
+        if depth == 0 or self.game_over():
+            # Return the evaluation score for the current position
+            return self.evaluate()
+
+        if maximizing_player:
+            max_score = float("-inf")
+            for move in self.get_possible_moves(self.current_player):
+                row, col = move[0]
+                new_row, new_col = move[1]
+                self.make_move(row, col, new_row, new_col)
+                score = self.minimax(depth - 1, alpha, beta, False)
+                self.undo_move(row, col, new_row, new_col)
+                max_score = max(max_score, score)
+                alpha = max(alpha, score)
+                if beta <= alpha:
+                    break  # Beta cutoff
+            return max_score
+        else:
+            min_score = float("inf")
+            opponent_player = self.get_opponent_player()
+            for move in self.get_possible_moves(opponent_player):
+                row, col = move[0]
+                new_row, new_col = move[1]
+                self.make_move(row, col, new_row, new_col)
+                score = self.minimax(depth - 1, alpha, beta, True)
+                self.undo_move(row, col, new_row, new_col)
+                min_score = min(min_score, score)
+                beta = min(beta, score)
+                if beta <= alpha:
+                    break  # Alpha cutoff
+            return min_score
