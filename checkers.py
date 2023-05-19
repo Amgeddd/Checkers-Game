@@ -56,3 +56,5 @@ class CheckersGame:
                     moves.append(((row, col), (target_row, target_col)))
 
         return moves
+    def is_valid_cell(self, row, col):
+        return 0 <= row < BOARD_SIZE and 0 <= col < BOARD_SIZE
