@@ -104,3 +104,44 @@ class CheckersGame:
                 if beta <= alpha:
                     break  # Alpha cutoff
             return min_score
+            def undo_move(self, start_row, start_col, end_row, end_col):
+        piece = self.board[end_row][end_col]
+        self.board[end_row][end_col] = EMPTY
+        self.board[start_row][start_col] = piece
+
+        # If a piece was captured during the move, restore the captured piece on the board
+        if abs(start_row - end_row) == 2:
+            captured_row = (start_row + end_row) // 2
+            captured_col = (start_col + end_col) // 2
+            self.board[captured_row][captured_col] = self.get_opponent_player()
+
+    def get_opponent_player(self):
+        if self.current_player == PLAYER_1:
+            return PLAYER_2
+        else:
+            return PLAYER_1
+
+    def make_move(self, start_row, start_col, end_row, end_col):
+        piece = self.board[start_row][start_col]
+        self.board[start_row][start_col] = EMPTY
+        self.board[end_row][end_col] = piece
+
+        # Check if the moved piece has reached the last row of the opponent's side to promote it to a king
+        if piece == PLAYER_1 and end_row == 0:
+            self.board[end_row][end_col] = KING_1
+        elif piece == PLAYER_2 and end_row == BOARD_SIZE - 1:
+            self.board[end_row][end_col] = KING_2
+
+        # remove the opponent's piece if a capture move was made
+        if abs(start_row - end_row) == 2:
+            captured_row = (start_row + end_row) // 2
+            captured_col = (start_col + end_col) // 2
+            self.board[captured_row][captured_col] = EMPTY
+
+    def get_possible_moves(self, player):
+        moves = []
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.board[row][col] == player:
+                    moves.extend(self.get_valid_moves(row, col))
+        return moves
