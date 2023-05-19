@@ -145,3 +145,23 @@ class CheckersGame:
                 if self.board[row][col] == player:
                     moves.extend(self.get_valid_moves(row, col))
         return moves
+    def initialize_board(self):
+        self.board = [[ 0 for _ in range(self.size)] for _ in range(self.size)]
+        # Initialize player 1 pieces
+        for row in range(3):
+            for col in range(BOARD_SIZE):
+                if (row + col) % 2 == 0:
+                    self.board[row][col] = PLAYER_1
+
+        # Initialize player 2 pieces
+        for row in range(5, BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+                if (row + col) % 2 == 0:
+                    self.board[row][col] = PLAYER_2
+
+    def print_board(self):
+        for row in range(BOARD_SIZE):
+            for col in range(BOARD_SIZE):
+                print(self.board[row][col], end=" ")
+            print()
+        print()
