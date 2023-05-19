@@ -104,17 +104,15 @@ class CheckersGame:
                 if beta <= alpha:
                     break  # Alpha cutoff
             return min_score
-            def undo_move(self, start_row, start_col, end_row, end_col):
+    def undo_move(self, start_row, start_col, end_row, end_col):
         piece = self.board[end_row][end_col]
         self.board[end_row][end_col] = EMPTY
         self.board[start_row][start_col] = piece
-
         # If a piece was captured during the move, restore the captured piece on the board
         if abs(start_row - end_row) == 2:
             captured_row = (start_row + end_row) // 2
             captured_col = (start_col + end_col) // 2
             self.board[captured_row][captured_col] = self.get_opponent_player()
-
     def get_opponent_player(self):
         if self.current_player == PLAYER_1:
             return PLAYER_2
